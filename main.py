@@ -1,9 +1,13 @@
-import os, argparse,time
+import os, time
 from colorama import Fore, init
 from random import choice
+import wget
+import zipfile
+import shutil
 
 mp3_mode = False
 emojis = ["🔮", "☔", "🍇", "💜", "🍄", "🌸"]
+reqfiles = ["ffmpeg", "ffprobe", "yt-dlp"]
 
 def getcommand(song):
     if mp3_mode == True:
@@ -19,10 +23,74 @@ def cls():
 def clog(text):
     print(f"{Fore.LIGHTMAGENTA_EX}[{choice(emojis)}]{Fore.RESET} {text}")
 
+
+
 def cinput(text):
     xa = input(f"{Fore.MAGENTA}[{choice(emojis)}]{Fore.RESET} {text} {Fore.LIGHTMAGENTA_EX}")
     print(Fore.RESET)
     return xa
+
+def check_reqfiles():
+    cls()
+    clog("Si ves esto me debes una galleta!")
+    notfindfiles = []
+    for file in reqfiles:
+        if not os.path.exists(f"{file}.exe"):
+            if 'yt-dlp' in file:
+                if not os.path.exists(f"yt-dlp_linux"):
+                    notfindfiles.append(file)
+            if 'ffmpeg' in file or 'ffprobe' in file:
+                if not os.path.exists(f"{file}"):
+                    notfindfiles.append(file)
+    if len(notfindfiles) > 0:
+        cls()
+        clog(f"Archivos faltantes: {notfindfiles}\n")
+        clog("Al parecer no se encuentran los archivos necesarios para que el programa funcione, quieres descargarlos?\n\n1. Sí\n2. No\n")
+        xt = str(cinput("Opción >"))
+        if xt == "2":
+            salir()
+        elif xt == "1":
+            clog("Descargando")
+            print(notfindfiles) # DEBUG
+            os.system("pause") # DEBUG
+            if 'ffmpeg' in notfindfiles or 'ffprobe' in notfindfiles:
+                if os.name == "nt":
+                    url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip"
+                    wget.download(url)
+                    print()
+                    clog("Extrayendo...")
+                    with zipfile.ZipFile("ffmpeg-master-latest-win64-gpl.zip", 'r') as zip_ref:
+                        zip_ref.extractall("./")
+                    clog("Moviendo archivos...")
+                    shutil.move("./ffmpeg-master-latest-win64-gpl/bin/ffmpeg.exe", "./")
+                    shutil.move("./ffmpeg-master-latest-win64-gpl/bin/ffprobe.exe", "./")
+                    clog("Limpiando...")
+                    shutil.rmtree('./ffmpeg-master-latest-win64-gpl', ignore_errors=True)
+                    os.remove("ffmpeg-master-latest-win64-gpl.zip")
+                    clog("Archivo descargado!")
+                    time.sleep(3)
+                else:
+                    url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz"
+                    wget.download(url)
+
+            if 'yt-dlp' in notfindfiles:
+                if os.name == "nt":
+                    url = "https://github.com/yt-dlp/yt-dlp/releases/download/2023.02.17/yt-dlp.exe"
+                    wget.download(url)
+                    print()
+                    clog("Archivo descargado!")
+                    time.sleep(3)
+                else:
+                    url = "https://github.com/yt-dlp/yt-dlp/releases/download/2023.02.17/yt-dlp_linux"
+                    wget.download(url)
+                    print()
+                    clog("Archivo descargado!")
+                    time.sleep(3)
+                
+        else:
+            check_reqfiles()
+    else:
+        cls()
 
 def salir():
     cls()
@@ -36,7 +104,7 @@ def salir():
 
 def prompt():
     print (f"""{Fore.LIGHTMAGENTA_EX}︵‿︵‿୨♡୧‿︵‿︵
-    Selecciona:{Fore.RESET}
+  Selecciona:{Fore.RESET}
 
 {Fore.LIGHTMAGENTA_EX}[{Fore.RESET}1{Fore.LIGHTMAGENTA_EX}]{Fore.RESET} Descargar canción de un link
 {Fore.LIGHTMAGENTA_EX}[{Fore.RESET}2{Fore.LIGHTMAGENTA_EX}]{Fore.RESET} Descargar canciones de una lista de links
@@ -57,7 +125,13 @@ def list_download():
         mp3_mode = True
     else:
         main()
-    with open(cinput(f"Nombre de la lista >"), "r") as f:
+    xe = cinput(f"Nombre de la lista >")
+    if not os.path.exists(xe):
+        clog("Ese archivo no existe, digita uno válido!")
+        time.sleep(5)
+        list_download()
+        return None
+    with open(xe, "r") as f:
         for song in f.readlines():
             cls()
             command = getcommand(song)
@@ -115,6 +189,7 @@ def single_download():
     main()
 
 def main():
+    check_reqfiles()
     cls()
     try:
         cls()
