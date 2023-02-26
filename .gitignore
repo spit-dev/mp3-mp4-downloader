@@ -1,4 +1,6 @@
 # Archivos ejecutables
 *.exe
 
-# Archivos de git 
+# Archivos de prueba
+*.mp3
+*.mp4
