@@ -27,7 +27,7 @@ def getcommand(song):
 init()
 
 def cls():
-    os.system("cls" if os.name == "nt" else "clear")
+    os.system("cls && title MP3-4 Downloader by Spit" if os.name == "nt" else "clear")
 
 def clog(text):
     print(f"{Fore.LIGHTMAGENTA_EX}[{choice(emojis)}]{Fore.RESET} {text}")
