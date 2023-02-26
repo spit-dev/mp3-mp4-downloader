@@ -126,14 +126,17 @@ def list_download():
     global mp3_mode
     print(f"""{Fore.LIGHTMAGENTA_EX}Descargar videos?
     1. {Fore.RESET}Sí (mp4)
-    {Fore.LIGHTMAGENTA_EX}2. {Fore.RESET}No (mp3)""")
+    {Fore.LIGHTMAGENTA_EX}2. {Fore.RESET}No (mp3)
+    {Fore.LIGHTMAGENTA_EX}3. {Fore.RESET}Volver""")
     slx = str(cinput(f"Opción >"))
     if slx == "1":
         mp3_mode = False
     elif slx == "2":
         mp3_mode = True
-    else:
+    elif slx == "3":
         main()
+    else:
+        list_download()
     xe = cinput(f"Nombre de la lista >")
     if not os.path.exists(xe):
         clog("Ese archivo no existe, digita uno válido!")
@@ -167,14 +170,17 @@ def single_download(song=None):
     global mp3_mode
     print(f"""{Fore.LIGHTMAGENTA_EX}Descargar videos?
     1. {Fore.RESET}Sí (mp4)
-    {Fore.LIGHTMAGENTA_EX}2. {Fore.RESET}No (mp3)""")
+    {Fore.LIGHTMAGENTA_EX}2. {Fore.RESET}No (mp3)
+    {Fore.LIGHTMAGENTA_EX}3. {Fore.RESET}Volver""")
     slx = str(cinput(f"Opción >"))
     if slx == "1":
         mp3_mode = False
     elif slx == "2":
         mp3_mode = True
-    else:
+    elif slx == "3":
         main()
+    else:
+        single_download()
 
     if not(song):
         clog("Ingresa el link de la canción.")
@@ -212,6 +218,8 @@ def main():
                 list_download()
             elif choice == '3':
                 salir()
+            else:
+                main()
         except NameError:
             exit(1)
     except KeyboardInterrupt:
