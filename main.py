@@ -152,7 +152,7 @@ def list_download():
         f.close()
     main()
 
-def single_download():
+def single_download(song=None):
     cls()
     global mp3_mode
     print(f"""{Fore.LIGHTMAGENTA_EX}Descargar videos?
