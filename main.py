@@ -48,8 +48,8 @@ def list_download():
     cls()
     global mp3_mode
     print(f"""{Fore.LIGHTMAGENTA_EX}Descargar videos?
-    1. {Fore.RESET}Sí
-    {Fore.LIGHTMAGENTA_EX}2. {Fore.RESET}No""")
+    1. {Fore.RESET}Sí (mp4)
+    {Fore.LIGHTMAGENTA_EX}2. {Fore.RESET}No (mp3)""")
     slx = str(cinput(f"Opción >"))
     if slx == "1":
         mp3_mode = False
@@ -78,12 +78,12 @@ def list_download():
         f.close()
     main()
 
-def single_download(song=None):
+def single_download():
     cls()
     global mp3_mode
     print(f"""{Fore.LIGHTMAGENTA_EX}Descargar videos?
-    1. {Fore.RESET}Sí
-    {Fore.LIGHTMAGENTA_EX}2. {Fore.RESET}No""")
+    1. {Fore.RESET}Sí (mp4)
+    {Fore.LIGHTMAGENTA_EX}2. {Fore.RESET}No (mp3)""")
     slx = str(cinput(f"Opción >"))
     if slx == "1":
         mp3_mode = False
@@ -116,33 +116,21 @@ def single_download(song=None):
 
 def main():
     cls()
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-s", "--single", help="Para descargar una cancion de un link.")
-    ap.add_argument("-l", "--list", help="Para descargar canciones de varios links")
-    args = vars(ap.parse_args())
-    if args['single'] or args['list']:
-        if args['single']:
-            single_download(args['single'])
-        else:
-            list_download(args['list'])
-    else:
+    try:
+        cls()
+        choice = prompt()
         try:
-            cls()
-            choice = prompt()
-
-            try:
-                if choice == '1':
-                    single_download()
-                elif choice == '2':
-                    list_download()
-                elif choice == '3':
-                    salir()
-            except NameError:
-                exit(1)
-        except KeyboardInterrupt:
+            if choice == '1':
+                single_download()
+            elif choice == '2':
+                list_download()
+            elif choice == '3':
+                salir()
+        except NameError:
             exit(1)
+    except KeyboardInterrupt:
         exit(1)
+    exit(1)
 
 if __name__ == '__main__':
     main()
-    exit(0)
