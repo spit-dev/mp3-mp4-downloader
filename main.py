@@ -4,16 +4,25 @@ from random import choice
 import wget
 import zipfile
 import shutil
+import glob
 
 mp3_mode = False
 emojis = ["🔮", "☔", "🍇", "💜", "🍄", "🌸"]
 reqfiles = ["ffmpeg", "ffprobe", "yt-dlp"]
 
+def mover():
+    filelist=glob.glob("./*.mp3") #mp3
+    for single_file in filelist:
+        shutil.move(single_file,"./Descargadas/")
+    filelist=glob.glob("./*.mp4") #mp4
+    for single_file in filelist:
+        shutil.move(single_file,"./Descargadas/") 
+
 def getcommand(song):
     if mp3_mode == True:
-        return f'yt-dlp.exe --embed-thumbnail --quiet --no-warnings --extract-audio --audio-format mp3 {song}'
+        return f'yt-dlp --embed-thumbnail --quiet --no-warnings --extract-audio --audio-format mp3 {song}'
     else:
-        return f'yt-dlp.exe --no-warnings --quiet -f mp4 {song}'
+        return f'yt-dlp --no-warnings --quiet -f mp4 {song}'
 
 init()
 
@@ -34,6 +43,8 @@ def check_reqfiles():
     cls()
     clog("Si ves esto me debes una galleta!")
     notfindfiles = []
+    if not os.path.exists("./Descargadas/"):
+        os.mkdir("./Descargadas")
     for file in reqfiles:
         if not os.path.exists(f"{file}.exe"):
             if 'yt-dlp' in file:
@@ -51,8 +62,6 @@ def check_reqfiles():
             salir()
         elif xt == "1":
             clog("Descargando")
-            print(notfindfiles) # DEBUG
-            os.system("pause") # DEBUG
             if 'ffmpeg' in notfindfiles or 'ffprobe' in notfindfiles:
                 if os.name == "nt":
                     url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip"
@@ -150,6 +159,7 @@ def list_download():
             clog("Continuando con los otros links...")
             time.sleep(3)
         f.close()
+        mover()
     main()
 
 def single_download(song=None):
@@ -182,6 +192,7 @@ def single_download(song=None):
         os.system(command)
         cls()
         clog("Tu canción ha sido descargada!")
+        mover()
         time.sleep(5)
 
     except:
