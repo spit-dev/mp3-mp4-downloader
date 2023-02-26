@@ -1,14 +1,22 @@
-import os, time
 from colorama import Fore, init
+from pytube import Playlist
 from random import choice
-import wget
+from art import *
+import os, time
 import zipfile
 import shutil
 import glob
+import wget
 
 mp3_mode = False
-emojis = ["🔮", "☔", "🍇", "💜", "🍄", "🌸"]
+emojis = ["🔮", "☔", "🍇", "💜", "🍄", "🌸", "🪐", "🚀"]
 reqfiles = ["ffmpeg", "ffprobe", "yt-dlp"]
+
+def playurls(playlist):
+    urls = []
+    for url in Playlist(playlist):
+        urls.append(url)
+    return urls
 
 def mover():
     filelist=glob.glob("./*.mp3") #mp3
@@ -31,8 +39,6 @@ def cls():
 
 def clog(text):
     print(f"{Fore.LIGHTMAGENTA_EX}[{choice(emojis)}]{Fore.RESET} {text}")
-
-
 
 def cinput(text):
     xa = input(f"{Fore.MAGENTA}[{choice(emojis)}]{Fore.RESET} {text} {Fore.LIGHTMAGENTA_EX}")
@@ -115,13 +121,14 @@ def prompt():
     print (f"""{Fore.LIGHTMAGENTA_EX}︵‿︵‿୨♡୧‿︵‿︵
   Selecciona:{Fore.RESET}
 
-{Fore.LIGHTMAGENTA_EX}[{Fore.RESET}1{Fore.LIGHTMAGENTA_EX}]{Fore.RESET} Descargar canción de un link
-{Fore.LIGHTMAGENTA_EX}[{Fore.RESET}2{Fore.LIGHTMAGENTA_EX}]{Fore.RESET} Descargar canciones de una lista de links
+{Fore.LIGHTMAGENTA_EX}[{Fore.RESET}1{Fore.LIGHTMAGENTA_EX}]{Fore.RESET} Descargar una canción
+{Fore.LIGHTMAGENTA_EX}[{Fore.RESET}2{Fore.LIGHTMAGENTA_EX}]{Fore.RESET} Descargar varias canciones
 {Fore.LIGHTMAGENTA_EX}[{Fore.RESET}3{Fore.LIGHTMAGENTA_EX}]{Fore.RESET} Salir""")
     choice = cinput(f"Opción > ")
     return str(choice)
 
 def list_download():
+    count = 1
     cls()
     global mp3_mode
     print(f"""{Fore.LIGHTMAGENTA_EX}Descargar videos?
@@ -137,31 +144,56 @@ def list_download():
         main()
     else:
         list_download()
-    xe = cinput(f"Nombre de la lista >")
-    if not os.path.exists(xe):
-        clog("Ese archivo no existe, digita uno válido!")
-        time.sleep(5)
-        list_download()
-        return None
-    with open(xe, "r") as f:
-        for song in f.readlines():
+    clog("Dónde está tu lista de canciones?\n1. Archivo\n2. Playlist de YouTube\n")
+    slt = cinput("Opción >")
+    if str(slt) == "1":
+        xe = cinput(f"Nombre de la lista >")
+        if not os.path.exists(xe):
+            clog("Ese archivo no existe, digita uno válido!")
+            time.sleep(5)
+            list_download()
+            return None
+        with open(xe, "r") as f:
+            for song in f.readlines():
+                cls()
+                command = getcommand(song)
+                if "youtube.com/" not in song:
+                    clog(f"({song}) no es un link válido")
+                    time.sleep(5)
+                    continue
+                clog(f"Descargando tus canciones, espera... ({count}/{len(f.readlines())})")
+                try:
+                    os.system(command)
+                    cls()
+                    clog("Tu canción ha sido descargada!")
+                    count += 1
+                except:
+                    cls()
+                    clog(f"Error al descargar ({song})...")
+                clog("Continuando con los otros links...")
+        f.close()
+
+    if str(slt) == "2":
+        clog("Nota: Recuerda que tu playlist ha de ser pública o no listada.\n")
+        xe = cinput(f"Link de la PlayList >")
+        if "youtube.com/playlist?" not in xe:
+            clog("Error, ingresa una playlist válida")
+            time.sleep(5)
+            list_download()
+        for song in playurls(xe):
             cls()
             command = getcommand(song)
-            if "youtube.com/" not in song:
-                clog(f"({song}) no es un link válido")
-                time.sleep(5)
-                continue
-            clog("Descargando tu canción, espera...")
+            clog(f"Descargando tus canciones, espera... ({count}/{len(playurls(xe))})")
             try:
                 os.system(command)
-                cls()
                 clog("Tu canción ha sido descargada!")
+                count += 1
             except:
-                cls()
                 clog(f"Error al descargar ({song})...")
-            clog("Continuando con los otros links...")
-            time.sleep(3)
-        f.close()
+                clog("Continuando con los otros links...")
+
+    
+        
         mover()
     main()
 
@@ -221,10 +253,10 @@ def main():
             else:
                 main()
         except NameError:
-            exit(1)
+            exit()
     except KeyboardInterrupt:
-        exit(1)
-    exit(1)
+        exit()
+    exit()
 
 if __name__ == '__main__':
     main()
