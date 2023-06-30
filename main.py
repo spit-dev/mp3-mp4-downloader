@@ -4,6 +4,7 @@ from random import choice
 from art import *
 import os, time
 import zipfile
+import tarfile
 import shutil
 import glob
 import wget
@@ -87,6 +88,18 @@ def check_reqfiles():
                 else:
                     url = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz"
                     wget.download(url)
+                    print()
+                    clog("Extrayendo...")
+                    with tarfile.open('ffmpeg-master-latest-linux64-gpl.tar.xz') as f:
+                        f.extractall('.')
+                    clog("Moviendo archivos...")
+                    shutil.move("./ffmpeg-master-latest-linux64-gpl/bin/ffmpeg", "./")
+                    shutil.move("./ffmpeg-master-latest-linux64-gpl/bin/ffprobe", "./")
+                    clog("Limpiando...")
+                    shutil.rmtree('./ffmpeg-master-latest-linux64-gpl', ignore_errors=True)
+                    os.remove("ffmpeg-master-latest-linux64-gpl.tar.xz")
+                    clog("Archivo descargado!")
+                    time.sleep(3)
 
             if 'yt-dlp' in notfindfiles:
                 if os.name == "nt":
