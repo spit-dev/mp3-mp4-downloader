@@ -28,10 +28,16 @@ def mover():
         shutil.move(single_file,"./Descargadas/") 
 
 def getcommand(song):
-    if mp3_mode == True:
-        return f'yt-dlp --embed-thumbnail --quiet --no-warnings --extract-audio --audio-format mp3 {song}'
+    if os.name == "nt":
+        if mp3_mode == True:
+            return f'yt-dlp --embed-thumbnail --quiet --no-warnings --extract-audio --audio-format mp3 {song}'
+        else:
+            return f'yt-dlp --no-warnings --quiet -f mp4 {song}'
     else:
-        return f'yt-dlp --no-warnings --quiet -f mp4 {song}'
+        if mp3_mode == True:
+            return f'./yt-dlp_linux --embed-thumbnail --quiet --no-warnings --extract-audio --audio-format mp3 {song}'
+        else:
+            return f'./yt-dlp_linux --no-warnings --quiet -f mp4 {song}'
 
 init()
 
