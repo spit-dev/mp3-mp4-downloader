@@ -8,6 +8,7 @@ import tarfile
 import shutil
 import glob
 import wget
+init()
 
 mp3_mode = False
 emojis = ["🔮", "☔", "🍇", "💜", "🍄", "🌸", "🪐", "🚀"]
@@ -38,8 +39,6 @@ def getcommand(song):
             return f'./yt-dlp_linux --embed-thumbnail --quiet --no-warnings --extract-audio --audio-format mp3 {song}'
         else:
             return f'./yt-dlp_linux --no-warnings --quiet -f mp4 {song}'
-
-init()
 
 def cls():
     os.system("cls && title MP3-4 Downloader by Spit" if os.name == "nt" else "clear")
@@ -132,9 +131,6 @@ def salir():
     time.sleep(5)
     cls()
     exit()
-
-
-
 
 def prompt():
     print (f"""{Fore.LIGHTMAGENTA_EX}︵‿︵‿୨♡୧‿︵‿︵
